@@ -1,0 +1,48 @@
+# ── RupeeRadar Docker Compose ──
+# Orchestrates backend (FastAPI) and frontend (nginx) services.
+#
+# Usage:
+#   docker compose up -d          # Start in detached mode
+#   docker compose logs -f        # Follow logs
+#   docker compose down           # Stop and remove containers
+#
+# The application will be available at http://localhost:80
+
+services:
+  # ── Backend API ──
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: rupeeradar-backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - HOST=0.0.0.0
+      - PORT=8000
+      - DEBUG=false
+      - DATABASE_URL=sqlite+aiosqlite:///./rupeeradar.db
+      - LLM_PROVIDER=${LLM_PROVIDER:-groq}
+      - GROQ_API_KEY=${GROQ_API_KEY:-}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - MAX_UPLOAD_SIZE_MB=10
+    volumes:
+      - rupeeradar-data:/app/uploads
+      - rupeeradar-db:/app
+
+  # ── Frontend (nginx) ──
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: rupeeradar-frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
+volumes:
+  rupeeradar-data:
+  rupeeradar-db:
