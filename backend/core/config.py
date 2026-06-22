@@ -16,7 +16,17 @@ class Settings(BaseSettings):
     # Server
     HOST: str = "0.0.0.0"
     PORT: int = 8000
-    CORS_ORIGINS: list[str] = ["http://localhost:5173", "http://localhost:3000", "http://localhost:80"]
+    CORS_ORIGINS: list[str] = [
+        "http://localhost:5173",
+        "http://localhost:5174",
+        "http://localhost:5175",
+        "http://localhost:5176",
+        "http://localhost:5177",
+        "http://localhost:3000",
+        "http://localhost:80",
+        # Add your Vercel frontend URL here after deployment
+        # "https://rupee-radar.vercel.app",
+    ]
 
     # File Upload
     MAX_UPLOAD_SIZE_MB: int = 10

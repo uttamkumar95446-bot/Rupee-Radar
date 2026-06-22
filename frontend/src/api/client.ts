@@ -1,8 +1,12 @@
 import axios from "axios";
 import type { JobStatus, UploadResponse } from "../types";
 
+// In production (Vercel), VITE_API_URL points to the Railway backend URL.
+// In development, the Vite proxy handles /api -> http://localhost:8000.
+const API_BASE = import.meta.env.VITE_API_URL || "/api";
+
 const api = axios.create({
-  baseURL: "/api",
+  baseURL: API_BASE,
   timeout: 30000,
 });
 
