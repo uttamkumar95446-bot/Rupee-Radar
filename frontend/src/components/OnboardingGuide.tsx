@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Upload, BarChart3, List, FileText, Lightbulb, X, ArrowRight, Check } from "lucide-react";
+import { Upload, BarChart3, List, FileText, Lightbulb, ArrowRight, Check } from "lucide-react";
 
 const ONBOARDING_KEY = "rupeeradar-onboarding-done";
 
