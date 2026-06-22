@@ -24,7 +24,6 @@ ENV PATH=/root/.local/bin:$PATH
 
 # Copy application code
 COPY backend/ ./backend/
-COPY backend/.env ./backend/.env 2>/dev/null || true
 
 # Expose port
 EXPOSE 8000
