@@ -11,3 +11,12 @@ healthcheckPath = "/api/health"
 healthcheckTimeout = 30
 restartPolicyType = "ON_FAILURE"
 restartPolicyMaxRetries = 5
+
+# Environment variables to pass through
+# Set these in the Railway dashboard
+[env]
+# DEBUG=false
+# LLM_PROVIDER=groq
+# GROQ_API_KEY=your_key_here
+# CORS_ORIGINS=["https://your-app.vercel.app"]
+# DATABASE_URL=sqlite+aiosqlite:///./rupeeradar.db

@@ -11,7 +11,7 @@ class Settings(BaseSettings):
     # App
     APP_NAME: str = "RupeeRadar"
     APP_VERSION: str = "1.0.0"
-    DEBUG: bool = True
+    DEBUG: bool = False
 
     # Server
     HOST: str = "0.0.0.0"
@@ -24,7 +24,8 @@ class Settings(BaseSettings):
         "http://localhost:5177",
         "http://localhost:3000",
         "http://localhost:80",
-        # Add your Vercel frontend URL here after deployment
+        # ── Production: add your Vercel frontend URL here ──
+        # Set this via RAILWAY env var: CORS_ORIGINS=["https://your-app.vercel.app"]
         # "https://rupee-radar.vercel.app",
     ]
 

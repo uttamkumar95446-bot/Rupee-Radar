@@ -1,20 +1,40 @@
 # ── RupeeRadar Backend Dockerfile ──
+# Multi-stage: builds dependencies in stage 1, runs in stage 2 for smaller image.
 
-FROM python:3.12-slim
+# ── Stage 1: Dependencies ──
+FROM python:3.12-slim AS builder
 
 WORKDIR /app
 
-COPY backend/requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+# Install build dependencies for optional packages (camelot-py, weasyprint)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    libffi-dev \
+    ghostscript \
+    && rm -rf /var/lib/apt/lists/*
 
+COPY backend/requirements.txt .
+RUN pip install --no-cache-dir --user -r requirements.txt
+
+# ── Stage 2: Runtime ──
+FROM python:3.12-slim
+
+# Copy installed Python packages from builder
+COPY --from=builder /root/.local /root/.local
+ENV PATH=/root/.local/bin:$PATH
+
+WORKDIR /app
+
+# Copy the backend application code
 COPY backend/ ./backend/
 
-# Expose port
+# Expose the default port (overridden by Railway's $PORT via railway.toml)
 EXPOSE 8000
+ENV PORT=8000
 
-# Health check
+# Health check — reads $PORT from environment (set by Railway or defaults to 8000)
 HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
-  CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/health')" || exit 1
+  CMD python -c "import os, urllib.request; port=os.environ.get('PORT', '8000'); urllib.request.urlopen(f'http://localhost:{port}/api/health')" || exit 1
 
-# Run with uvicorn
+# Run with uvicorn (startCommand in railway.toml overrides this for Railway)
 CMD ["uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "8000"]
